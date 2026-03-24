@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>עומר כובש את החשבון! 🚀</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050b1a;--panel:#0d1b35;--panel2:#0a1428;
+  --accent:#00f5d4;--accent2:#ff6b35;--accent3:#ffd60a;--purple:#7b2fff;
+  --text:#e8f4f8;--text-dim:#6a8fa8;--success:#39d353;--danger:#ff4757;
+  --border:rgba(0,245,212,0.15);--glow:0 0 20px rgba(0,245,212,0.4);--glow2:0 0 20px rgba(255,107,53,0.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle linear infinite;}
+
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes slideIn{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes levelUp{0%{transform:scale(0) rotate(-10deg);opacity:0}60%{transform:scale(1.15) rotate(3deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes shootStar{0%{transform:translateX(0) translateY(0);opacity:1}100%{transform:translateX(-300px) translateY(200px);opacity:0}}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,245,212,.4)}50%{box-shadow:0 0 0 12px rgba(0,245,212,0)}}
+@keyframes bounceIn{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes scoreFloat{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}
+
+.shoot{position:fixed;width:80px;height:2px;background:linear-gradient(90deg,transparent,#fff,transparent);border-radius:2px;pointer-events:none;z-index:0;animation:shootStar 1s linear forwards;}
+.particle{position:fixed;pointer-events:none;border-radius:3px;animation:fall linear forwards;z-index:201;}
+.score-float{position:fixed;pointer-events:none;font-family:'Orbitron',sans-serif;font-weight:900;color:var(--accent3);font-size:1.4rem;text-shadow:0 0 10px rgba(255,214,10,.5);z-index:202;animation:scoreFloat .9s ease forwards;}
+
+.container{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 16px 40px;}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,var(--panel),#0f1f40);border-bottom:2px solid var(--accent);box-shadow:0 4px 30px rgba(0,245,212,.15);position:sticky;top:0;z-index:100;}
+.header-title{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--accent);text-shadow:0 0 15px rgba(0,245,212,.6);letter-spacing:1px;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.stat-badge{display:flex;align-items:center;gap:4px;border:1px solid var(--border);border-radius:20px;padding:5px 10px;font-size:.82rem;font-weight:700;}
+.stat-badge.pts{background:rgba(255,214,10,.08);border-color:rgba(255,214,10,.3);}
+.stat-badge.str{background:rgba(255,107,53,.08);border-color:rgba(255,107,53,.3);}
+.music-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:all .2s;}
+.music-btn:hover{background:rgba(0,245,212,.1);border-color:var(--accent);}
+
+/* LEVEL BAR */
+.level-bar-wrap{background:var(--panel2);padding:8px 18px;border-bottom:1px solid var(--border);}
+.level-info{display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-dim);margin-bottom:5px;}
+.level-name{color:var(--accent3);font-weight:700;}
+.level-bar{height:7px;background:rgba(255,255,255,.07);border-radius:10px;overflow:hidden;}
+.level-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:10px;transition:width .7s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 10px rgba(0,245,212,.5);}
+
+/* SCREENS */
+.screen{display:none;animation:slideIn .35s ease;}
+.screen.active{display:block;}
+
+/* HOME */
+.hero{text-align:center;padding:30px 20px 22px;}
+.hero-rocket{font-size:4.5rem;animation:float 3s ease-in-out infinite;display:block;margin-bottom:12px;filter:drop-shadow(0 0 20px rgba(0,245,212,.4));}
+.hero h1{font-family:'Orbitron',sans-serif;font-size:1.3rem;color:var(--accent);text-shadow:0 0 20px rgba(0,245,212,.5);margin-bottom:5px;}
+.hero p{color:var(--text-dim);font-size:.85rem;margin-bottom:22px;}
+
+.modes-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:0 4px;}
+.mode-card{background:linear-gradient(135deg,var(--panel),var(--panel2));border:1px solid var(--border);border-radius:16px;padding:20px 12px;cursor:pointer;transition:all .25s;text-align:center;position:relative;overflow:hidden;}
+.mode-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cc),transparent);opacity:0;transition:opacity .25s;}
+.mode-card:hover::before,.mode-card:active::before{opacity:1;}
+.mode-card:hover,.mode-card:active{transform:translateY(-4px);border-color:var(--cc);box-shadow:0 8px 30px rgba(0,0,0,.4),0 0 20px var(--cg);}
+.mode-card .icon{font-size:2rem;margin-bottom:8px;display:block;}
+.mode-card h3{font-size:.95rem;font-weight:700;margin-bottom:3px;}
+.mode-card p{font-size:.7rem;color:var(--text-dim);}
+.mode-card .stage-dots{display:flex;justify-content:center;gap:4px;margin-top:8px;}
+.stage-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);transition:all .3s;}
+.stage-dot.done{background:var(--success);border-color:var(--success);box-shadow:0 0 6px var(--success);}
+.mode-add{--cc:var(--accent);--cg:rgba(0,245,212,.2);}
+.mode-mult{--cc:var(--accent2);--cg:rgba(255,107,53,.2);}
+.mode-frac{--cc:var(--purple);--cg:rgba(123,47,255,.2);}
+.mode-word{--cc:var(--accent3);--cg:rgba(255,214,10,.2);}
+
+/* STAGE SELECT */
+.stage-select-header{text-align:center;padding:22px 20px 14px;}
+.stage-select-header h2{font-family:'Orbitron',sans-serif;font-size:1.2rem;color:var(--accent);margin-bottom:5px;}
+.stage-select-header p{color:var(--text-dim);font-size:.82rem;}
+.stages-list{display:flex;flex-direction:column;gap:11px;padding:0 4px;}
+.stage-card{background:linear-gradient(135deg,var(--panel),var(--panel2));border:1.5px solid var(--border);border-radius:16px;padding:18px 20px;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:16px;}
+.stage-card:hover:not(.locked){transform:translateX(-4px);border-color:var(--accent);box-shadow:var(--glow);}
+.stage-card.locked{opacity:.4;cursor:not-allowed;}
+.stage-card.done-card{border-color:rgba(57,211,83,.25);}
+.stage-card .stage-num{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:900;color:var(--accent3);min-width:36px;text-align:center;}
+.stage-card.done-card .stage-num{color:var(--success);}
+.stage-card .stage-info h3{font-size:.93rem;font-weight:700;margin-bottom:2px;}
+.stage-card .stage-info p{font-size:.73rem;color:var(--text-dim);}
+.stage-card .stage-status{margin-right:auto;font-size:1.2rem;}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text-dim);font-size:.8rem;cursor:pointer;padding:14px 4px;transition:color .2s;}
+.back-link:hover{color:var(--accent);}
+
+/* GAME */
+.game-header{display:flex;justify-content:space-between;align-items:center;padding:14px 4px 10px;}
+.back-btn{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;padding:6px 13px;color:var(--text-dim);cursor:pointer;font-size:.78rem;font-family:'Heebo',sans-serif;transition:all .2s;}
+.back-btn:hover{color:var(--text);border-color:var(--accent);}
+.progress-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.progress-info{font-size:.78rem;color:var(--text-dim);}
+.progress-dots{display:flex;gap:5px;}
+.prog-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);transition:all .3s;}
+.prog-dot.ok{background:var(--success);border-color:var(--success);}
+.prog-dot.err{background:var(--danger);border-color:var(--danger);}
+
+/* TIMER */
+.timer-wrap{margin-bottom:10px;}
+.timer-bar{height:5px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;}
+.timer-fill{height:100%;border-radius:10px;transition:width .1s linear;}
+
+/* Q CARD */
+.q-card{background:linear-gradient(135deg,var(--panel),var(--panel2));border:1px solid var(--border);border-radius:20px;padding:24px 22px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden;}
+.q-label{font-size:.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;display:block;}
+.q-equation{font-family:'Orbitron',sans-serif;font-size:2.3rem;font-weight:900;color:var(--accent3);text-shadow:0 0 20px rgba(255,214,10,.35);margin:8px 0;line-height:1.2;letter-spacing:2px;direction:ltr;unicode-bidi:isolate;}
+.q-context{font-size:.82rem;color:var(--text-dim);margin-top:6px;line-height:1.6;}
+.stage-badge{display:inline-block;background:rgba(123,47,255,.12);border:1px solid rgba(123,47,255,.3);border-radius:8px;padding:3px 10px;font-size:.67rem;color:var(--purple);margin-bottom:10px;letter-spacing:1px;}
+
+/* OPTIONS */
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.option-btn{background:linear-gradient(135deg,var(--panel),rgba(13,27,53,.8));border:1.5px solid var(--border);border-radius:14px;padding:17px 10px;color:var(--text);cursor:pointer;font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;transition:all .2s;text-align:center;}
+.option-btn:hover:not(:disabled){border-color:var(--accent);background:rgba(0,245,212,.08);box-shadow:var(--glow);transform:scale(1.03);}
+.option-btn.correct{border-color:var(--success)!important;background:rgba(57,211,83,.15)!important;color:var(--success);box-shadow:0 0 20px rgba(57,211,83,.3);}
+.option-btn.wrong{border-color:var(--danger)!important;background:rgba(255,71,87,.12)!important;color:var(--danger);animation:shake .4s ease;}
+
+/* FEEDBACK */
+.feedback{display:none;text-align:center;padding:13px;border-radius:14px;margin-bottom:14px;font-weight:700;font-size:.95rem;animation:popIn .3s ease;}
+.feedback.show{display:block;}
+.feedback.good{background:rgba(57,211,83,.12);border:1px solid var(--success);color:var(--success);}
+.feedback.bad{background:rgba(255,71,87,.1);border:1px solid var(--danger);color:var(--danger);}
+
+/* NEXT */
+.next-btn{width:100%;background:linear-gradient(135deg,var(--accent2),var(--purple));border:none;border-radius:14px;padding:15px;color:#fff;font-family:'Heebo',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;transition:all .2s;display:none;letter-spacing:.5px;}
+.next-btn.show{display:block;animation:popIn .3s ease;}
+.next-btn:hover{transform:scale(1.02);box-shadow:var(--glow2);}
+
+/* STREAK */
+.streak-popup{position:fixed;top:88px;left:50%;transform:translateX(-50%) scale(0);background:linear-gradient(135deg,var(--accent2),var(--purple));color:#fff;font-family:'Orbitron',sans-serif;font-size:.88rem;padding:8px 20px;border-radius:30px;z-index:150;font-weight:700;transition:transform .3s cubic-bezier(.34,1.56,.64,1);box-shadow:var(--glow2);pointer-events:none;}
+.streak-popup.show{transform:translateX(-50%) scale(1);}
+
+/* LEVEL UP */
+.level-overlay{display:none;position:fixed;inset:0;background:rgba(5,11,26,.93);z-index:200;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;}
+.level-overlay.show{display:flex;}
+.level-overlay-emoji{font-size:5rem;animation:float 1.5s ease-in-out infinite;margin-bottom:18px;}
+.level-overlay h2{font-family:'Orbitron',sans-serif;font-size:1.9rem;color:var(--accent3);text-shadow:0 0 30px rgba(255,214,10,.6);margin-bottom:8px;}
+.level-overlay p{font-size:1rem;color:var(--text-dim);margin-bottom:26px;}
+
+/* STAGE COMPLETE */
+.stage-overlay{display:none;position:fixed;inset:0;background:rgba(5,11,26,.93);z-index:200;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;}
+.stage-overlay.show{display:flex;}
+.stage-overlay-emoji{font-size:5rem;animation:bounceIn .6s ease;margin-bottom:14px;}
+.stage-overlay h2{font-family:'Orbitron',sans-serif;font-size:1.7rem;color:var(--accent);margin-bottom:8px;}
+.stage-score-big{font-size:3rem;font-weight:900;font-family:'Orbitron',sans-serif;color:var(--accent3);margin:10px 0;animation:bounceIn .5s .2s both ease;}
+.stars-rating{font-size:2.2rem;margin:8px 0 12px;}
+.stage-overlay p{font-size:.9rem;color:var(--text-dim);margin-bottom:22px;}
+.stage-overlay-btns{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;}
+
+/* BUTTONS */
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--purple));border:none;border-radius:14px;padding:15px;color:#000;font-family:'Heebo',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{transform:scale(1.03);box-shadow:var(--glow);}
+.btn-secondary{background:transparent;border:1.5px solid var(--border);border-radius:14px;padding:13px;color:var(--text-dim);font-family:'Heebo',sans-serif;font-weight:700;font-size:.92rem;cursor:pointer;transition:all .2s;}
+.btn-secondary:hover{border-color:var(--accent);color:var(--text);}
+
+/* RESULTS */
+.results{text-align:center;padding:36px 20px;animation:levelUp .5s ease;}
+.results-emoji{font-size:4.5rem;display:block;margin-bottom:14px;}
+.results h2{font-family:'Orbitron',sans-serif;font-size:1.3rem;color:var(--accent3);margin-bottom:8px;}
+.results-score{font-size:2.4rem;font-weight:900;color:var(--accent);margin:12px 0;font-family:'Orbitron',sans-serif;}
+.results-breakdown{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0 22px;}
+.res-stat{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;}
+.res-stat .val{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;color:var(--accent);}
+.res-stat .lbl{font-size:.68rem;color:var(--text-dim);margin-top:3px;}
+.results-btns{display:flex;flex-direction:column;gap:10px;}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+
+<div class="streak-popup" id="streakPopup">🔥 רצף x<span id="streakNum">0</span>!</div>
+
+<!-- LEVEL UP -->
+<div class="level-overlay" id="levelOverlay">
+  <div class="level-overlay-emoji">⭐</div>
+  <h2 id="levelTitle">!עלית רמה</h2>
+  <p id="levelDesc">כל הכבוד עומר!</p>
+  <button class="btn-primary" onclick="closeLevelUp()" style="min-width:220px">!קדימה ⚡</button>
+</div>
+
+<!-- STAGE COMPLETE -->
+<div class="stage-overlay" id="stageOverlay">
+  <div class="stage-overlay-emoji" id="stageEmoji">🎉</div>
+  <h2 id="stageTitle">סיימת שלב!</h2>
+  <div class="stage-score-big" id="stageScoreDisp">10/10</div>
+  <div class="stars-rating" id="stageStars">⭐⭐⭐</div>
+  <p id="stageDesc">מעולה!</p>
+  <div class="stage-overlay-btns">
+    <button class="btn-primary" id="stageNextBtn" onclick="goNextStage()">השלב הבא ⚡</button>
+    <button class="btn-secondary" onclick="closeStageOverlay()">תפריט ראשי 🏠</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-right">
+    <button class="music-btn" id="musicBtn" onclick="toggleMusic()">🔊</button>
+    <div class="stat-badge pts">⭐ <span id="totalPts">0</span></div>
+    <div class="stat-badge str">🔥 <span id="streakDisp">0</span></div>
+  </div>
+  <div class="header-title" id="headerTitle">OMER 🚀</div>
+</div>
+
+<div class="level-bar-wrap">
+  <div class="level-info">
+    <span class="level-name" id="lvlName">רמה 1 — טירון 🌱</span>
+    <span id="lvlPts">0 / 100</span>
+  </div>
+  <div class="level-bar"><div class="level-fill" id="lvlFill" style="width:0%"></div></div>
+</div>
+
+<div class="container">
+
+  <!-- HOME -->
+  <div class="screen active" id="screenHome">
+    <div class="hero">
+      <span class="hero-rocket">🚀</span>
+      <h1>!עומר כובש את החשבון</h1>
+      <p>לכל נושא 3 שלבים עם קושי עולה 🌌</p>
+    </div>
+    <div class="modes-grid">
+      <div class="mode-card mode-add" onclick="selectMode('add')">
+        <span class="icon">➕</span><h3>חיבור וחיסור</h3><p>עד 3 ספרות</p>
+        <div class="stage-dots"><div class="stage-dot" id="d-add-0"></div><div class="stage-dot" id="d-add-1"></div><div class="stage-dot" id="d-add-2"></div></div>
+      </div>
+      <div class="mode-card mode-mult" onclick="selectMode('mult')">
+        <span class="icon">✖️</span><h3>כפל וחילוק</h3><p>לוח כפל ומעבר</p>
+        <div class="stage-dots"><div class="stage-dot" id="d-mult-0"></div><div class="stage-dot" id="d-mult-1"></div><div class="stage-dot" id="d-mult-2"></div></div>
+      </div>
+      <div class="mode-card mode-frac" onclick="selectMode('frac')">
+        <span class="icon">½</span><h3>שברים</h3><p>חיבור, חיסור, חישוב</p>
+        <div class="stage-dots"><div class="stage-dot" id="d-frac-0"></div><div class="stage-dot" id="d-frac-1"></div><div class="stage-dot" id="d-frac-2"></div></div>
+      </div>
+      <div class="mode-card mode-word" onclick="selectMode('word')">
+        <span class="icon">🧩</span><h3>בעיות מילוליות</h3><p>חשיבה מתמטית</p>
+        <div class="stage-dots"><div class="stage-dot" id="d-word-0"></div><div class="stage-dot" id="d-word-1"></div><div class="stage-dot" id="d-word-2"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE SELECT -->
+  <div class="screen" id="screenStage">
+    <div class="back-link" onclick="goHome()">← חזרה לתפריט</div>
+    <div class="stage-select-header">
+      <h2 id="stageSelectTitle">בחר שלב</h2>
+      <p>השלם שלב כדי לפתוח את הבא!</p>
+    </div>
+    <div class="stages-list" id="stagesList"></div>
+  </div>
+
+  <!-- GAME -->
+  <div class="screen" id="screenGame">
+    <div class="game-header">
+      <div class="progress-wrap">
+        <div class="progress-info">שאלה <span id="qNum">1</span> מתוך <span id="qTotal">10</span></div>
+        <div class="progress-dots" id="progDots"></div>
+      </div>
+      <button class="back-btn" onclick="goHome()">→ תפריט</button>
+    </div>
+    <div class="timer-wrap"><div class="timer-bar"><div class="timer-fill" id="timerFill" style="width:100%;background:var(--success)"></div></div></div>
+    <div id="gameContent"></div>
+    <div class="feedback" id="mainFeedback"></div>
+    <button class="next-btn" id="mainNext" onclick="nextQ()">הבא ⚡</button>
+  </div>
+
+</div>
+
+<script>
+// STARS
+const starsEl=document.getElementById('stars');
+for(let i=0;i<110;i++){
+  const s=document.createElement('div');s.className='star';
+  const sz=Math.random()*2.5+.5;
+  s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${Math.random()*4+2}s;animation-delay:${Math.random()*4}s;opacity:${Math.random()*.5+.1}`;
+  starsEl.appendChild(s);
+}
+setInterval(()=>{
+  const s=document.createElement('div');s.className='shoot';
+  s.style.top=Math.random()*50+'%';s.style.right='-80px';
+  s.style.transform=`rotate(${15+Math.random()*20}deg)`;
+  document.body.appendChild(s);setTimeout(()=>s.remove(),1000);
+},4500);
+
+// AUDIO
+let audioCtx=null,musicOn=true;
+function getCtx(){
+  if(!audioCtx||audioCtx.state==='closed') audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  return audioCtx;
+}
+function beep(freq,dur,type,vol,delay){
+  if(!musicOn) return;
+  type=type||'sine';vol=vol||.15;delay=delay||0;
+  try{
+    const ctx=getCtx(),osc=ctx.createOscillator(),g=ctx.createGain();
+    osc.connect(g);g.connect(ctx.destination);
+    osc.type=type;osc.frequency.value=freq;
+    const t=ctx.currentTime+delay;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(vol,t+.015);
+    g.gain.exponentialRampToValueAtTime(.001,t+dur);
+    osc.start(t);osc.stop(t+dur+.05);
+  }catch(e){}
+}
+
+// 🎵 Fun success melody — cheerful ascending arpeggio
+function playSuccess(streak){
+  if(!musicOn) return;
+  if(streak>=5){
+    // Full fanfare for high streak
+    const n=[[523,.08,.18,0],[659,.08,.18,.09],[784,.08,.18,.18],[1047,.1,.18,.27],[1318,.08,.18,.37],[1568,.35,.18,.46]];
+    n.forEach(([f,d,v,t])=>beep(f,d,'sine',v,t));
+    beep(392,.4,'sine',.07,.3);beep(523,.3,'sine',.06,.4);
+  } else if(streak>=3){
+    const n=[[659,.1,.18,0],[784,.1,.18,.11],[1047,.12,.18,.22],[1318,.3,.17,.34]];
+    n.forEach(([f,d,v,t])=>beep(f,d,'sine',v,t));
+    beep(523,.3,'sine',.07,.2);
+  } else {
+    // Normal — happy 4-note arpeggio
+    const n=[[523,.12,.15,0],[659,.12,.15,.13],[784,.15,.15,.26],[1047,.25,.14,.39]];
+    n.forEach(([f,d,v,t])=>beep(f,d,'sine',v,t));
+  }
+  // soft pad
+  if(streak>=2){ beep(392,.3,'sine',.05,.2); }
+}
+
+function playWrong(){
+  if(!musicOn) return;
+  beep(300,.1,'square',.08,0);
+  beep(250,.15,'square',.09,.1);
+  beep(200,.2,'sawtooth',.06,.22);
+}
+
+function playLevelUp(){
+  if(!musicOn) return;
+  const seq=[[523,.1,.2,0],[659,.1,.2,.12],[784,.1,.2,.24],[523,.1,.2,.36],[659,.1,.2,.48],[784,.1,.2,.6],[1047,.5,.2,.72]];
+  seq.forEach(([f,d,v,t])=>beep(f,d,'sine',v,t));
+  beep(392,.6,'sine',.08,.4);
+}
+
+function playStageComplete(stars){
+  if(!musicOn) return;
+  if(stars===3){
+    // Victory fanfare!
+    const seq=[[784,.08,.2,0],[784,.08,.2,.1],[784,.08,.2,.2],[659,.3,.2,.3],[784,.4,.2,.62]];
+    seq.forEach(([f,d,v,t])=>beep(f,d,'sine',v,t));
+    beep(523,.6,'sine',.1,.4);beep(659,.5,'sine',.09,.5);
+    setTimeout(()=>{
+      [[1047,.1,.18,0],[1175,.1,.18,.1],[1319,.1,.18,.2],[1047,.1,.18,.3],[1175,.3,.18,.4]].forEach(([f,d,v,t])=>beep(f,d,'sine',v,t));
+    },900);
+  } else if(stars>=2){
+    [[659,.12,.18,0],[784,.12,.18,.14],[1047,.35,.18,.28]].forEach(([f,d,v,t])=>beep(f,d,'sine',v,t));
+  } else {
+    beep(523,.15,'sine',.15,0);beep(659,.3,'sine',.15,.2);
+  }
+}
+
+function toggleMusic(){
+  musicOn=!musicOn;
+  document.getElementById('musicBtn').textContent=musicOn?'🔊':'🔇';
+}
+
+// STATE
+let totalPoints=0,streak=0,totalXP=0,xpLevel=0;
+let currentMode='add',currentStageIdx=0;
+let questions=[],qIndex=0,correct=0,answered=false,wrongCount=0;
+let timerInterval=null,timerSecs=0;
+
+const xpLevels=[
+  {need:0,name:'טירון 🌱'},{need:100,name:'חוקר 🔭'},{need:250,name:'לוחם ⚔️'},
+  {need:450,name:'גיבור 🦸'},{need:700,name:'קפטן 🚀'},{need:1000,name:'מפקד 🌌'},
+  {need:1400,name:'אגדה 🌟'},{need:1900,name:'אלוף 💎'}
+];
+
+const stageConfig={
+  add:[{name:'קל — חיבור פשוט',sub:'מספרים עד 100',emoji:'➕',qs:8},{name:'בינוני — 3 ספרות',sub:'חיבור, חיסור, מספר חסר',emoji:'🔢',qs:10},{name:'קשה — אתגר',sub:'תרגילים מורכבים',emoji:'🔥',qs:12}],
+  mult:[{name:'קל — לוח כפל',sub:'כפל עד 10×10',emoji:'✖️',qs:8},{name:'בינוני — כפל מתקדם',sub:'כפל דו-ספרתי וחילוק',emoji:'🔢',qs:10},{name:'קשה — אתגר',sub:'כפל × חילוק מורכב',emoji:'🔥',qs:12}],
+  frac:[{name:'קל — שברים בסיסיים',sub:'½, ¼, ⅓ — זיהוי וחיבור',emoji:'½',qs:8},{name:'בינוני — חישוב שברים',sub:'שבר מתוך מספר',emoji:'🔢',qs:10},{name:'קשה — שברים מורכבים',sub:'פעולות משולבות',emoji:'🔥',qs:12}],
+  word:[{name:'קל — בעיות פשוטות',sub:'צעד אחד לפתרון',emoji:'🧩',qs:6},{name:'בינוני — בעיות מורכבות',sub:'שני צעדים',emoji:'📡',qs:8},{name:'קשה — אתגר מחשבתי',sub:'בעיות קשות',emoji:'🔥',qs:10}],
+};
+const modeNames={add:'חיבור וחיסור',mult:'כפל וחילוק',frac:'שברים',word:'בעיות מילוליות'};
+
+const prog={
+  add:[{done:false,stars:0},{done:false,stars:0},{done:false,stars:0}],
+  mult:[{done:false,stars:0},{done:false,stars:0},{done:false,stars:0}],
+  frac:[{done:false,stars:0},{done:false,stars:0},{done:false,stars:0}],
+  word:[{done:false,stars:0},{done:false,stars:0},{done:false,stars:0}],
+};
+
+function updateUI(){
+  document.getElementById('totalPts').textContent=totalPoints;
+  document.getElementById('streakDisp').textContent=streak;
+  const cur=xpLevels[xpLevel],nxt=xpLevels[xpLevel+1]||{need:cur.need+9999};
+  const pct=Math.min(100,((totalXP-cur.need)/(nxt.need-cur.need))*100);
+  document.getElementById('lvlName').textContent=`רמה ${xpLevel+1} — ${cur.name}`;
+  document.getElementById('lvlFill').style.width=pct+'%';
+  document.getElementById('lvlPts').textContent=`${totalXP-cur.need} / ${nxt.need-cur.need}`;
+  // update home dots
+  ['add','mult','frac','word'].forEach(m=>prog[m].forEach((p,i)=>{
+    const d=document.getElementById(`d-${m}-${i}`);
+    if(d) d.className='stage-dot'+(p.done?' done':'');
+  }));
+}
+
+function addXP(xp){
+  totalXP+=xp;totalPoints+=xp;
+  const nxt=xpLevels[xpLevel+1];
+  if(nxt&&totalXP>=nxt.need&&xpLevel<xpLevels.length-1){
+    xpLevel++;playLevelUp();confetti();
+    document.getElementById('levelTitle').textContent=`!עלית לרמה ${xpLevel+1}`;
+    document.getElementById('levelDesc').textContent=`${xpLevels[xpLevel].name} — מדהים עומר!`;
+    document.getElementById('levelOverlay').classList.add('show');
+  }
+  updateUI();
+}
+
+function closeLevelUp(){document.getElementById('levelOverlay').classList.remove('show');}
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goHome(){clearTimer();showScreen('screenHome');updateUI();}
+
+// STAGE SELECT
+function selectMode(mode){
+  currentMode=mode;
+  document.getElementById('stageSelectTitle').textContent=modeNames[mode];
+  const list=document.getElementById('stagesList'); list.innerHTML='';
+  stageConfig[mode].forEach((s,i)=>{
+    const unlocked=(i===0||prog[mode][i-1].done);
+    const p=prog[mode][i];
+    const div=document.createElement('div');
+    div.className='stage-card'+(p.done?' done-card':'')+(unlocked?'':' locked');
+    div.innerHTML=`<div class="stage-num">${i+1}</div><div class="stage-info"><h3>${s.emoji} ${s.name}</h3><p>${s.sub}</p>${p.done?`<div style="font-size:.85rem;margin-top:3px">${'⭐'.repeat(p.stars)}${'☆'.repeat(3-p.stars)}</div>`:''}</div><div class="stage-status">${!unlocked?'🔒':p.done?'✅':'▶️'}</div>`;
+    if(unlocked) div.onclick=()=>startStage(mode,i);
+    list.appendChild(div);
+  });
+  showScreen('screenStage');
+}
+
+// START STAGE
+function startStage(mode,idx){
+  currentMode=mode;currentStageIdx=idx;
+  qIndex=0;correct=0;wrongCount=0;answered=false;
+  questions=generateQuestions(mode,idx);
+  document.getElementById('qTotal').textContent=questions.length;
+  document.getElementById('headerTitle').textContent=`שלב ${idx+1} — ${modeNames[mode]}`;
+  buildDots();
+  showScreen('screenGame');
+  loadQ();
+}
+
+function buildDots(){
+  const c=document.getElementById('progDots');c.innerHTML='';
+  questions.forEach((_,i)=>{const d=document.createElement('div');d.className='prog-dot';d.id=`pd${i}`;c.appendChild(d);});
+}
+
+// TIMER
+function startTimer(){
+  clearTimer();
+  const secs=[18,15,12][currentStageIdx];
+  timerSecs=secs;
+  document.getElementById('timerFill').style.width='100%';
+  document.getElementById('timerFill').style.background='var(--success)';
+  timerInterval=setInterval(()=>{
+    timerSecs--;
+    const pct=Math.max(0,(timerSecs/secs)*100);
+    const fill=document.getElementById('timerFill');
+    if(fill){fill.style.width=pct+'%';fill.style.background=pct>50?'var(--success)':pct>25?'var(--accent3)':'var(--danger)';}
+    if(timerSecs<=0) timeUp();
+  },1000);
+}
+function clearTimer(){clearInterval(timerInterval);timerInterval=null;}
+function timeUp(){
+  if(answered) return;
+  answered=true;clearTimer();
+  const ans=questions[qIndex].ans;
+  document.querySelectorAll('#mcqOpts .option-btn').forEach(b=>{b.disabled=true;if(String(b.textContent)===String(ans))b.classList.add('correct');});
+  showFeedback('⏰ אזל הזמן! התשובה: '+ans,'bad');
+  playWrong();streak=0;wrongCount++;
+  markDot(qIndex,false);updateUI();
+  document.getElementById('mainNext').classList.add('show');
+}
+function markDot(i,ok){const d=document.getElementById(`pd${i}`);if(d)d.className='prog-dot '+(ok?'ok':'err');}
+
+// GENERATE
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function shuffle(arr){return[...arr].sort(()=>Math.random()-.5);}
+function wrongOpts(ans,count,spread){
+  count=count||3;spread=spread||15;
+  const s=new Set([String(ans)]);let t=0;
+  while(s.size<=count&&t<300){t++;let d=rand(1,spread);if(Math.random()>.5)d=-d;const c=ans+d;if(c>0&&c!==ans)s.add(String(c));}
+  return shuffle([...s]);
+}
+
+function generateQuestions(mode,stage){
+  const n=stageConfig[mode][stage].qs;
+  if(mode==='add') return genAdd(stage,n);
+  if(mode==='mult') return genMult(stage,n);
+  if(mode==='frac') return genFrac(stage,n);
+  return genWord(stage,n);
+}
+
+function genAdd(stage,n){
+  const qs=[];
+  for(let i=0;i<n;i++){
+    let a,b,ans,display,label='חשב:';
+    if(stage===0){
+      if(rand(0,1)){a=rand(10,65);b=rand(5,35);ans=a+b;display=`${a} + ${b}`;}
+      else{a=rand(30,99);b=rand(5,a-5);ans=a-b;display=`${a} − ${b}`;}
+    }else if(stage===1){
+      const t=rand(0,2);
+      if(t===0){a=rand(100,499);b=rand(50,300);ans=a+b;display=`${a} + ${b}`;}
+      else if(t===1){a=rand(200,800);b=rand(50,a-10);ans=a-b;display=`${a} − ${b}`;}
+      else{a=rand(50,200);ans=rand(10,80);b=a+ans;display=`${a} + __ = ${b}`;label='מה המספר החסר?';}
+    }else{
+      const t=rand(0,2);
+      if(t===0){a=rand(300,799);b=rand(100,500);ans=a+b;display=`${a} + ${b}`;}
+      else if(t===1){a=rand(500,999);b=rand(100,a-10);ans=a-b;display=`${a} − ${b}`;}
+      else{const c=rand(100,600);ans=rand(50,250);a=c+ans;display=`${a} − __ = ${c}`;label='מה המספר החסר?';}
+    }
+    qs.push({display,label,ans,opts:wrongOpts(ans,3,rand(5,30+stage*20))});
+  }
+  return qs;
+}
+
+function genMult(stage,n){
+  const qs=[];
+  for(let i=0;i<n;i++){
+    let a,b,ans,display,label='חשב:';
+    if(stage===0){a=rand(2,10);b=rand(2,10);ans=a*b;display=`${a} × ${b}`;}
+    else if(stage===1){
+      if(rand(0,1)){a=rand(2,12);b=rand(2,12);ans=a*b;display=`${a} × ${b}`;}
+      else{b=rand(2,10);ans=rand(2,10);a=b*ans;display=`${a} ÷ ${b}`;}
+    }else{
+      const t=rand(0,2);
+      if(t===0){a=rand(11,25);b=rand(2,9);ans=a*b;display=`${a} × ${b}`;}
+      else if(t===1){b=rand(2,12);ans=rand(2,12);a=b*ans;display=`${a} ÷ ${b}`;}
+      else{a=rand(2,9);b=rand(2,9);const c=rand(2,4);ans=a*b*c;display=`${a} × ${b} × ${c}`;}
+    }
+    qs.push({display,label,ans,opts:wrongOpts(ans,3,rand(3,15+stage*10))});
+  }
+  return qs;
+}
+
+const fracBank=[
+  [{display:'½ + ½',ans:'1'},{display:'¼ + ¼',ans:'½'},{display:'⅓ + ⅓',ans:'⅔'},{display:'¾ − ¼',ans:'½'},{display:'1 − ½',ans:'½'},{display:'1 − ¼',ans:'¾'},{display:'½ + ¼',ans:'¾'},{display:'⅔ − ⅓',ans:'⅓'}],
+  [{display:'½ מתוך 20',ans:10},{display:'¼ מתוך 40',ans:10},{display:'⅓ מתוך 30',ans:10},{display:'¾ מתוך 12',ans:9},{display:'½ מתוך 36',ans:18},{display:'¼ מתוך 100',ans:25},{display:'⅓ מתוך 60',ans:20},{display:'¾ מתוך 24',ans:18},{display:'½ מתוך 48',ans:24},{display:'¼ מתוך 80',ans:20}],
+  [{display:'¾ מתוך 40',ans:30},{display:'⅔ מתוך 30',ans:20},{display:'¾ מתוך 100',ans:75},{display:'⅓ מתוך 90',ans:30},{display:'½ + ¼ + ¼',ans:'1'},{display:'¾ + ¼',ans:'1'},{display:'⅔ מתוך 60',ans:40},{display:'¾ מתוך 80',ans:60},{display:'⅓ מתוך 120',ans:40},{display:'½ מתוך 150',ans:75},{display:'¼ מתוך 200',ans:50},{display:'¾ מתוך 60',ans:45}],
+];
+const fracStr=['¼','½','¾','⅓','⅔','1','1½','2','0'];
+function genFrac(stage,n){
+  return shuffle(fracBank[stage]).slice(0,n).map(q=>{
+    let opts;
+    if(typeof q.ans==='number') opts=wrongOpts(q.ans,3,rand(3,12));
+    else opts=shuffle([q.ans,...fracStr.filter(f=>f!==q.ans).slice(0,3)]);
+    return{...q,label:'חשב:',opts};
+  });
+}
+
+const wordBank=[
+  [{story:'🚀 לעומר יש 48 כרטיסי כוכב. הוא נתן 15 לחברו. כמה נשארו לו?',ans:33},{story:'🐉 יש 6 דרקונים. לכל דרקון 7 אוצרות. כמה אוצרות בסך הכל?',ans:42},{story:'⚽ עומר קלע 4 שערים בכל משחק. שיחק 5 משחקים. כמה שערים?',ans:20},{story:'🍕 הזמינו 3 פיצות, כל אחת 8 חתיכות. כמה חתיכות בסך הכל?',ans:24},{story:'💰 עומר חסך 25 ₪ בשבוע. חסך 4 שבועות. כמה חסך?',ans:100},{story:'🎯 חץ פגע ב-8 מטרות בכל סיבוב. היו 3 סיבובים. כמה מטרות?',ans:24}],
+  [{story:'🏆 עומר השיג 120 נקודות ביום א׳ ו-85 ביום ב׳. כמה נקודות יש לו?',ans:205},{story:'🚂 רכבת נוסעת 60 ק"מ בשעה. כמה ק"מ תיסע ב-3 שעות וחצי?',ans:210},{story:'📚 ספר מכיל 180 עמודים. עומר קרא 65. כמה עמודים נשארו?',ans:115},{story:'🌌 חללית טסה 450 ק"מ. עוד חללית טסה פי 2. כמה טסה השנייה?',ans:900},{story:'🦈 72 דגים מחולקים שווה ב-8 אגנים. כמה דגים בכל אגן?',ans:9},{story:'🎮 4 שלבים × 12 אתגרים כל שלב. כמה אתגרים בסך הכל?',ans:48},{story:'🍎 ל-5 ילדים 35 תפוחים ביחד. כמה לכל ילד אם חלקו שווה?',ans:7},{story:'⭐ עומר אסף 250 נקודות. אחיו אסף חצי מכך. כמה נקודות לשניהם?',ans:375}],
+  [{story:'🚀 חללית צריכה 3 שעות לטוס 270 ק"מ. מה מהירותה בשעה?',ans:90},{story:'💎 3 פיראטים מצאו 540 מטבעות. חלקו שווה ואז כל אחד קנה 30. כמה נשאר לכל אחד?',ans:150},{story:'🎯 עומר ירה 15 חצים, פגע ב-⅔. כמה חצים פגעו?',ans:10},{story:'🏊 בריכה מחזיקה 2400 ליטר. ממלאים 200 ליטר לדקה. כמה דקות למלא?',ans:12},{story:'🍕 הזמינו 5 פיצות (8 חתיכות כל אחת). אכלו 27 חתיכות. כמה נשארו?',ans:13},{story:'💰 עומר חסך 50 ₪ בשבוע. אחרי 8 שבועות קנה משחק ב-180 ₪. כמה נשאר?',ans:220},{story:'🌍 מסע בן 3 ימים: 120 ק"מ, 85 ק"מ, 95 ק"מ. כמה ק"מ סה"כ?',ans:300},{story:'🐟 4 אקווריומים × 15 דגים. מכרו 18 דגים. כמה נשארו?',ans:42},{story:'⚡ מחולל מייצר 45 קוואט לשעה. כמה ב-3 שעות ורבע?',ans:146.25},{story:'🏗️ 12 קומות × 8 דירות. 3 אנשים לדירה. כמה אנשים בסך הכל?',ans:288}],
+];
+function genWord(stage,n){
+  return shuffle(wordBank[stage]).slice(0,n).map(q=>({...q,opts:wrongOpts(q.ans,3,rand(8,35))}));
+}
+
+// LOAD Q
+function loadQ(){
+  answered=false;hideFeedback();
+  document.getElementById('mainNext').classList.remove('show');
+  document.getElementById('qNum').textContent=qIndex+1;
+  const q=questions[qIndex];
+  if(currentMode==='word') renderWord(q);
+  else renderMCQ(q);
+  startTimer();
+}
+
+function renderMCQ(q){
+  const cfg=stageConfig[currentMode][currentStageIdx];
+  document.getElementById('gameContent').innerHTML=`
+    <div class="q-card">
+      <span class="stage-badge">שלב ${currentStageIdx+1} — ${cfg.name}</span>
+      <span class="q-label">${q.label||'חשב:'}</span>
+      <div class="q-equation">${q.display}</div>
+      ${q.note?`<div class="q-context">${q.note}</div>`:''}
+    </div>
+    <div class="options-grid" id="mcqOpts"></div>`;
+  q.opts.forEach(o=>{
+    const btn=document.createElement('button');btn.className='option-btn';btn.textContent=o;
+    btn.onclick=()=>checkAnswer(btn,o,q.ans);
+    document.getElementById('mcqOpts').appendChild(btn);
+  });
+}
+
+function renderWord(q){
+  const cfg=stageConfig[currentMode][currentStageIdx];
+  document.getElementById('gameContent').innerHTML=`
+    <div class="q-card">
+      <span class="stage-badge">📡 בעיה מילולית — שלב ${currentStageIdx+1}</span>
+      <div style="font-size:1rem;color:var(--text);text-align:right;line-height:1.9;margin-top:8px">${q.story}</div>
+    </div>
+    <div class="options-grid" id="mcqOpts"></div>`;
+  q.opts.forEach(o=>{
+    const btn=document.createElement('button');btn.className='option-btn';btn.textContent=o;
+    btn.onclick=()=>checkAnswer(btn,o,q.ans);
+    document.getElementById('mcqOpts').appendChild(btn);
+  });
+}
+
+// CHECK
+function checkAnswer(btn,chosen,ans){
+  if(answered) return;
+  answered=true;clearTimer();
+  document.querySelectorAll('#mcqOpts .option-btn').forEach(b=>b.disabled=true);
+  const ok=String(chosen)===String(ans);
+  if(ok){
+    btn.classList.add('correct');
+    streak++;correct++;
+    const timePts=Math.max(0,Math.floor(timerSecs*.6));
+    const streakBonus=streak>=5?8:streak>=3?4:0;
+    const pts=10+timePts+streakBonus;
+    addXP(pts);
+    markDot(qIndex,true);
+    showFeedback(`✅ ${randomPraise()}! +${pts} נקודות`,'good');
+    playSuccess(streak);
+    showStreakPopup();
+    floatPts('+'+pts);
+  }else{
+    btn.classList.add('wrong');
+    document.querySelectorAll('#mcqOpts .option-btn').forEach(b=>{if(String(b.textContent)===String(ans))b.classList.add('correct');});
+    streak=0;wrongCount++;
+    markDot(qIndex,false);
+    showFeedback('❌ התשובה הנכונה: '+ans,'bad');
+    playWrong();updateUI();
+  }
+  document.getElementById('mainNext').classList.add('show');
+}
+
+function floatPts(txt){
+  const el=document.createElement('div');el.className='score-float';el.textContent=txt;
+  el.style.cssText=`top:${130+Math.random()*40}px;left:${20+Math.random()*50}vw;`;
+  document.body.appendChild(el);setTimeout(()=>el.remove(),900);
+}
+
+// NEXT
+function nextQ(){
+  qIndex++;
+  if(qIndex>=questions.length){showStageComplete();return;}
+  hideFeedback();loadQ();
+}
+
+// STAGE COMPLETE
+function showStageComplete(){
+  const total=questions.length,pct=correct/total;
+  const stars=pct>=0.9?3:pct>=0.7?2:pct>=0.5?1:0;
+  const p=prog[currentMode][currentStageIdx];
+  prog[currentMode][currentStageIdx]={done:true,stars:Math.max(p.stars,stars)};
+  updateUI();
+  const msgs=[['🚀','!המשך להתאמן','0/3 כוכבים — נסה שוב!'],['💪','!טוב מאוד','1/3 כוכבים — ממשיך להשתפר!'],['🌟','!כל הכבוד','2/3 כוכבים — ממש טוב!'],['🏆','!מושלם','3/3 כוכבים — מדהים עומר!']];
+  const [emoji,title,desc]=msgs[stars];
+  document.getElementById('stageEmoji').textContent=emoji;
+  document.getElementById('stageTitle').textContent=title;
+  document.getElementById('stageScoreDisp').textContent=`${correct}/${total}`;
+  document.getElementById('stageStars').textContent='⭐'.repeat(stars)+'☆'.repeat(3-stars);
+  document.getElementById('stageDesc').textContent=desc;
+  const hasNext=currentStageIdx<2;
+  document.getElementById('stageNextBtn').style.display=hasNext?'block':'none';
+  playStageComplete(stars);
+  if(stars>=2) confetti();
+  document.getElementById('stageOverlay').classList.add('show');
+}
+function goNextStage(){document.getElementById('stageOverlay').classList.remove('show');startStage(currentMode,currentStageIdx+1);}
+function closeStageOverlay(){document.getElementById('stageOverlay').classList.remove('show');goHome();}
+
+// HELPERS
+function showStreakPopup(){
+  if(streak<3) return;
+  document.getElementById('streakNum').textContent=streak;
+  const el=document.getElementById('streakPopup');
+  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1500);
+}
+function confetti(){
+  const c=['#00f5d4','#ff6b35','#ffd60a','#7b2fff','#ff4757','#39d353'];
+  for(let i=0;i<45;i++){
+    const p=document.createElement('div');p.className='particle';
+    const sz=Math.random()*10+4;
+    p.style.cssText=`width:${sz}px;height:${sz}px;background:${c[Math.floor(Math.random()*c.length)]};top:-20px;left:${Math.random()*100}vw;animation-duration:${Math.random()*2+1.5}s;animation-delay:${Math.random()*.5}s`;
+    document.body.appendChild(p);setTimeout(()=>p.remove(),3000);
+  }
+}
+const praises=['מעולה','יופי','כל הכבוד','ממש טוב','וואו','מצוין','פצצה','אלוף','גאון','נכון!','סופר!'];
+function randomPraise(){return praises[Math.floor(Math.random()*praises.length)];}
+function showFeedback(msg,type){const el=document.getElementById('mainFeedback');el.textContent=msg;el.className='feedback '+type+' show';}
+function hideFeedback(){document.getElementById('mainFeedback').className='feedback';}
+
+updateUI();
+</script>
+</body>
+</html>
